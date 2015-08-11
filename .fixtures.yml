@@ -1,0 +1,9 @@
+fixtures:
+  repositories:
+    archive: "https://github.com/puppet-community/puppet-archive"
+  forge_modules:
+    stdlib:
+      repo: "puppetlabs-stdlib"
+      ref: "4.7.0"
+  symlinks:
+    websphere_deployer: "#{source_dir}"

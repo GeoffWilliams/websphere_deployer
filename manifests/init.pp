@@ -43,9 +43,5 @@
 # Copyright 2015 Your name here, unless otherwise noted.
 #
 class websphere_deployer {
-  package { "nokogiri":
-    ensure => present,
-    provider => 'puppet_gem'
-  }
 
 }

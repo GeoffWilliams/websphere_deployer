@@ -1,5 +1,5 @@
 class websphere_deployer::deploymgr(
-    $host         = $::hostname
+    $host         = $::hostname,
     $base_dir     = $websphere_deployer::params::base_dir,
     $cron_ensure  = present,
     $user         = $websphere_deployer::params::user,
@@ -16,11 +16,16 @@ class websphere_deployer::deploymgr(
     mode  => "0644",
   }
 
-  $script_dir    = "${base_dir}/scripts"
+  $script_dir    = "${base_dir}/${websphere_deployer::params::script_dir_name}"
+  $bin_dir       = "${base_dir}/${websphere_deployer::params::bin_dir_name}"
   $script_files  = $websphere_deployer::params::script_files
-  $rw_dirs = $websphere_deployer::params::rw_dirs
-  $ro_dirs = $websphere_deployer::params::ro_dirs
+  $bin_files     = $websphere_deployer::params::bin_files
+  $rw_dirs       = $websphere_deployer::params::rw_dirs
+  $ro_dirs       = $websphere_deployer::params::ro_dirs
 
+  file { $base_dir:
+    ensure => directory,
+  }
 
   # directories owned by `wsadmin`
   file { $rw_dirs:
@@ -40,6 +45,15 @@ class websphere_deployer::deploymgr(
     file { "${script_dir}/${script_file}":
       ensure => file,
       source => "puppet:///modules/${module_name}/${script_file}",
+      mode   => "0755",
+    }
+  }
+
+  $bin_files.each |$bin_file| {
+    file { "${bin_dir}/${bin_file}":
+      ensure => file,
+      source => "puppet:///modules/${module_name}/${bin_file}",
+      mode   => "0755",
     }
   }
 
