@@ -21,6 +21,8 @@
 #   download URL via regular expression=
 # [*exec_path*]
 #   Default path to use for `Exec` resources
+# [*disable_md5*]
+#   If true, do not attempt to verify the md5 sum of remote files
 define websphere_deployer::deploy_ear(
   $deployment_instance,
   $download_url   = $title,
@@ -29,9 +31,17 @@ define websphere_deployer::deploy_ear(
   $group          = $websphere_deployer::group,
   $version_regexp = $websphere_deployer::version_regexp,
   $exec_path      = $websphere_deployer::exec_path,
+  $disable_md5    = false,
 ) {
   
-  $md5_url = "${download_url}.md5"
+  if $disable_md5 {
+    $checksum_url  = undef
+    $checksum_type = undef
+  } else {
+    $checksum_url  = "${download_url}.md5"
+    $checksum_type = "md5"
+  }
+
 
   if has_key($::wsapp_instance_appnames, $deployment_instance) {
     $app_name = $::wsapp_instance_appnames[$deployment_instance]
@@ -71,8 +81,8 @@ define websphere_deployer::deploy_ear(
         ensure        => present,
         extract       => false,
         source        => $download_url,
-        checksum_url  => $md5_url,
-        checksum_type => 'md5',
+        checksum_url  => $checksum_url,
+        checksum_type => $checksum_type,
         user          => $user,
         group         => $group,
       }

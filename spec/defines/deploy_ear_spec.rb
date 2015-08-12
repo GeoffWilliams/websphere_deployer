@@ -146,4 +146,20 @@ describe 'websphere_deployer::deploy_ear', :type => :define do
     end    
   end
 
+  # allow turn off md5 checking when requried
+  context "md5check optional" do
+    let :params do
+      {
+        :deployment_instance => "test",
+        :disable_md5         => true
+      }     
+    end
+    it do
+      should contain_archive("/opt/ibm/deployments/incoming/test.ear").with(
+        "checksum_url"  => nil,
+        "checksum_type" => nil
+      )
+    end
+  end
+
 end
