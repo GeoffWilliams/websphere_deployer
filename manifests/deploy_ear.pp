@@ -26,7 +26,8 @@ define websphere_deployer::deploy_ear(
   # corp_properties DRT (yet to be written)
  
   # FIXME this logic is broken. we talk about restarting a whole app server but refernce the instance...
- exec { "was_service_${deployment_instance}":
+  # resolve via properties file: 
+  exec { "was_service_${deployment_instance}":
     path        => $exec_path,
     command     => "restartAppServer ${app_server}",
     refreshonly => true,

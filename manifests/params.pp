@@ -40,7 +40,7 @@ class websphere_deployer::params {
     "/bin",
   ]
 
-  $deploy_freq = "*/5"
+  $deploy_freq = [0,5,10,15,20,25,30,35,40,45,50,55]
 
   $date_command = '`/usr/bin/date \+\%Y-\%m-\%d`'
   $cron_command = "${base_dir}/bin/deploymgr.sh >> ${base_dir}/logs/deploymgr.log.${date_command} 2>&1"
