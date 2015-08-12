@@ -1,7 +1,29 @@
+# Download an ear file to the websphere server if version number obtained from
+# the download URL indicates that we need to change versions vs the current
+# system version
+#
+# Params
+# [*title*]
+#   File to download or arbitrary string if `download_url` also specified
+# [*deployment_instance*]
+#   Instance to deploy to.  Used to find out information about the deployment
+#   server by inspecting a properties file at 
+#   `/opt/ibm/deployments/properties/${deployment_instance}.properties`
+# [*incoming dir*]
+#   Directory to save `.ear` files to.  The cron job will detect these files
+#   and deploy them if present
+# [*user*]
+#   User who runs the cron job, also used for file ownership
+# [*group*]
+#   Used for file ownership for websphere-writable files
+# [*version_regexp*]
+#   Regular expression used to validate version numbers captured from the
+#   download URL via regular expression=
+# [*exec_path*]
+#   Default path to use for `Exec` resources
 define websphere_deployer::deploy_ear(
   $deployment_instance,
   $download_url   = $title,
-  $app_server     = $::fqdn,
   $incoming_dir   = $websphere_deployer::params::incoming_dir,
   $user           = $websphere_deployer::params::user,
   $group          = $websphere_deployer::params::user,
@@ -27,11 +49,11 @@ define websphere_deployer::deploy_ear(
  
   # FIXME this logic is broken. we talk about restarting a whole app server but refernce the instance...
   # resolve via properties file: 
-  exec { "was_service_${deployment_instance}":
-    path        => $exec_path,
-    command     => "restartAppServer ${app_server}",
-    refreshonly => true,
-  }
+  #exec { "was_service_${deployment_instance}":
+  #  path        => $exec_path,
+  #  command     => "restartAppServer ${app_server}",
+  #  refreshonly => true,
+  #}
 
 
   if $deployment_instance_version =~ $version_regexp {

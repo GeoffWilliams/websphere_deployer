@@ -68,15 +68,15 @@ describe 'websphere_deployer::deploy_ear', :type => :define do
   end
 
   # service correctly registered (so we can refer to in from corp_properties DRT
-  context "service correctly registered" do
-    it do
-      expect {should compile}.not_to raise_error      
-
-      should contain_exec("was_service_test").with(
-        "refreshonly" => true,
-      )
-    end
-  end
+  #context "service correctly registered" do
+  #  it do
+  #    expect {should compile}.not_to raise_error      
+  #
+  #    should contain_exec("was_service_test").with(
+  #      "refreshonly" => true,
+  #    )
+  #  end
+  #end
 
 
   # Only upgrade when different version is supplied
