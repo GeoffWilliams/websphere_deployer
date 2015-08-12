@@ -12,10 +12,10 @@ def parse_xml(field, file)
 end
 
 Facter.add("wsapp_versions") do
-  webapps_dir = "/opt/ibm/tree"
   wsapp_versions = {}
   Dir.glob("/opt/ibm/WebSphere/AppServer/profiles/AppSrv*/installedApps/*/*.ear/META-INF/maven/*/*/pom.xml").each do |path|
-    name        = parse_xml("name", path)
+# ignore name from pom.xml - could potentially be different to the real app name
+#    name        = parse_xml("name", path)
     version     = parse_xml("version", path)
     group_id    = parse_xml("groupId", path)
     artifact_id = parse_xml("artifactId", path)
