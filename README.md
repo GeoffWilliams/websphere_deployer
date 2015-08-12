@@ -15,65 +15,100 @@
 
 ## Overview
 
-A one-maybe-two sentence summary of what the module does/what problem it solves.
-This is your 30 second elevator pitch for your module. Consider including
-OS/Puppet version it works with.
+Install the `deploymgr` subsystem to `/opt/ibm/deployments` and provide a 
+defined resource type to do `ear` file deployments by dropping them into the
+`/opt/ibm/deployments/incomming` directory.
 
-## Module Description
-
-If applicable, this section should have a brief description of the technology
-the module integrates with and what that integration enables. This section
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?"
-
-If your module has a range of functionality (installation, configuration,
-management, etc.) this is the time to mention it.
+Files are only downloaded to the incoming directory if the version number
+(obtained by munging the download URL) is different to the version of the
+installed appliation.
 
 ## Setup
 
 ### What websphere_deployer affects
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+* Directory structure for `/opt/ibm/deployments`
+* Installs a cron job to deploy all `.ear` files found in the incoming
+  directory (can be disabled)
+* Installs custom fact to resolve application name from propeties file
+* Installs custom fact to resolve version from application name
 
-### Setup Requirements **OPTIONAL**
+### Setup Requirements
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
-
-### Beginning with websphere_deployer
-
-The very basic steps needed for a user to get the module up and running.
-
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you may wish to include an additional section here: Upgrading
-(For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+* WebSphere must already be installed
+* Needs puppet future parser (PE > 3.8)
+* Needs an external server to download `.ear` files from
+* Properties files (contents of `/opt/ibm/deployments/properties`) should already be on the system
+* Requires the [archive module](https://github.com/puppet-community/puppet-archive)
 
 ## Usage
 
-Put the classes, types, and resources for customizing, configuring, and doing
-the fancy stuff with your module here.
+### Install the `deploymgr` subsystem:
+```puppet
+  class { "websphere_deploy": }
+```
+
+### Install an ear file from a nexus server
+
+```puppet
+  websphere_deployer::deploy_ear { "http://nexus.dev.rms.nsw.gov.au/content/groups/rms-repo/nswrta/opr/opr-ear/4.2.0/opr-ear-4.2.0.ear":
+    deployment_instance => "opr",
+  }
+```
+
+Assuming that either `opr` is either missing or a different version to `4.2.0`,
+the above code would download the `.ear` file and save it to the incoming 
+directory.
+
+If the version on the system matches the version in the `.ear` file, then no
+action will be taken.
+
+Current version is obtained by looking at the `ws_version` fact, which this
+module installs.
 
 ## Reference
 
-Here, list the classes, types, providers, facts, etc contained in your module.
-This section should include all of the under-the-hood workings of your module so
-people know what the module is touching on their system but don't need to mess
-with things. (We are working on automating this section!)
+### $::wsapp_instance_appnames
+Custom fact to resolve `deployment_instance` to application names.  Obtained
+by inspecting every `.properties` file under `/opt/ibm/deployer/properties`.
 
-## Limitations
+This path is stored within the custom fact itself and results in a structure
+similar to the following:
+```ruby
+wsapp_instance_appnames => {
+  sanctionliftws => "SanctionLiftService EAR",
+  sz => "sz EAR",
+  ...
+}
+```
 
-This is where you list OS compatibility, version compatibility, etc.
+### $::wsapp_versions
+Custom fact to resolve application name to version information.  Obtained by 
+finding `pom.xml` according to a shell glob defined inside the fact itself.
+Results in a structure similar to the following:
+```ruby 
+wsapp_versions => {
+   => {
+    groupId => "RMS",
+    artifactId => "hello world",
+    version => "4.55.6"
+  }
+}
+```
+
+### websphere_deployer
+Class to setup `deploymgr` subsystem
+
+### websphere_deployer::deploy_ear
+Defined resource type for downloading ear files
 
 ## Development
+To test custom facts, take a copy of the directory structure from
+`/opt/ibm/deployments` on a production machine to your workstation, then run
+facter by pointing it at the checked out sourcecode:
+```shell
+FACTERLIB=PATH_TO_CHECKED_OUT_MODULE/lib/facter/ facter
+```
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You may also add any additional sections you feel are
-necessary or important to include here. Please use the `## ` header.
+## Limitations
+* Puppet Labs do not support or maintain this module
