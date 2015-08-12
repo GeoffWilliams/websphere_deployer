@@ -5,26 +5,42 @@
 #   Value to pass to `cron` resource's ensure parameter.  Set `absent` to 
 #   disable the cron job
 # [*user*]
-#   User to run cron job as.  Also used for file ownership
+#   User to run cron job as.  Also used for file ownership.  Referenced by
+#   `deploy_ear` for consistency
 # [*group*]
-#   Used for file ownership
+#   Used for file ownership.  Referenced by `deploy_ear` for consistency
 # [*deploy_freq*]
 #   Argument for cron job minute field
 # [*cron_command*]
 #   Fully munged cron command to run.  Computed in params.pp
+# [*incoming_dir*]
+#   Directory to save `.ear` files to.  The cron job will detect these files
+#   and deploy them if present.  `deploy_ear` resource type 
+#   references the variable from here to ensure consistency
+# [*version_regexp*]
+#   Regular expression used to validate version numbers captured from the
+#   download URL via regular expression.  `deploy_ear` resource
+#   type references this variable from here to ensure consistency.  If this
+#   value is changed, ensure that RSpec tests are rerun and updated if 
+#   necessary
+# [*exec_path*]
+#   Default path to use for `Exec` resourcaes.  `deploy_ear` resource type 
+#   references the variable from here to ensure consistency
 class websphere_deployer(
-#    $host         = $::hostname,
-    $cron_ensure  = present,
-    $user         = $websphere_deployer::params::user,
-    $group        = $websphere_deployer::params::group,
-    $deploy_freq  = $websphere_deployer::params::deploy_freq,
-    $cron_command = $websphere_deployer::params::cron_command,
+    $cron_ensure    = present,
+    $user           = $websphere_deployer::params::user,
+    $group          = $websphere_deployer::params::group,
+    $deploy_freq    = $websphere_deployer::params::deploy_freq,
+    $cron_command   = $websphere_deployer::params::cron_command,
+    $incoming_dir   = $websphere_deployer::params::incoming_dir,
+    $version_regexp = $websphere_deployer::params::version_regexp,
+    $exec_path      = $websphere_deployer::params::exec_path,
 ) inherits websphere_deployer::params {
   
   # base_dir already munged in params.pp so making it a parameter would give us
   # inconsistent paths.  It's highly unlikely to need to be changed and if so
   # could be done in params.pp
-  $base_dir     = $websphere_deployer::params::base_dir,
+  $base_dir     = $websphere_deployer::params::base_dir
 
   # By default, only root owns files.  This gives some protection against a 
   # hijacked `wsadmin` account (eg though web-->shell injection)

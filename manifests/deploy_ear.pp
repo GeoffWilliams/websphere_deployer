@@ -24,14 +24,13 @@
 define websphere_deployer::deploy_ear(
   $deployment_instance,
   $download_url   = $title,
-  $incoming_dir   = $websphere_deployer::params::incoming_dir,
-  $user           = $websphere_deployer::params::user,
-  $group          = $websphere_deployer::params::group,
-  $version_regexp = $websphere_deployer::params::version_regexp,
-  $exec_path      = $websphere_deployer::params::exec_path,
+  $incoming_dir   = $websphere_deployer::incoming_dir,
+  $user           = $websphere_deployer::user,
+  $group          = $websphere_deployer::group,
+  $version_regexp = $websphere_deployer::version_regexp,
+  $exec_path      = $websphere_deployer::exec_path,
 ) {
   
-  include websphere_deployer::params
   $md5_url = "${download_url}.md5"
 
   if has_key($::wsapp_instance_appnames, $deployment_instance) {
