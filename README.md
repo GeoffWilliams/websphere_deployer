@@ -110,5 +110,21 @@ facter by pointing it at the checked out sourcecode:
 FACTERLIB=PATH_TO_CHECKED_OUT_MODULE/lib/facter/ facter
 ```
 
+## Testing
+This module ships with RSpec tests.  To run them, first prepare your system:
+```shell
+bundle install
+```
+
+You may then run the tests at will.  If downloading from GitHub from behind a
+proxy server, you will need to have your `http_proxy` and `https_proxy` 
+variables exported
+```shell
+bundle exec rake spec
+```
+
+It is suggested to have your CI server execute these tests before allowing code
+to be published to the puppet master
+
 ## Limitations
 * Puppet Labs do not support or maintain this module
