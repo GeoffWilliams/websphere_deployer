@@ -1,12 +1,30 @@
+# Setup overall websphere deployer (deploymgr) system
+#
+# Params
+# [*cron_ensure*]
+#   Value to pass to `cron` resource's ensure parameter.  Set `absent` to 
+#   disable the cron job
+# [*user*]
+#   User to run cron job as.  Also used for file ownership
+# [*group*]
+#   Used for file ownership
+# [*deploy_freq*]
+#   Argument for cron job minute field
+# [*cron_command*]
+#   Fully munged cron command to run.  Computed in params.pp
 class websphere_deployer(
-    $host         = $::hostname,
-    $base_dir     = $websphere_deployer::params::base_dir,
+#    $host         = $::hostname,
     $cron_ensure  = present,
     $user         = $websphere_deployer::params::user,
     $group        = $websphere_deployer::params::group,
     $deploy_freq  = $websphere_deployer::params::deploy_freq,
     $cron_command = $websphere_deployer::params::cron_command,
 ) inherits websphere_deployer::params {
+  
+  # base_dir already munged in params.pp so making it a parameter would give us
+  # inconsistent paths.  It's highly unlikely to need to be changed and if so
+  # could be done in params.pp
+  $base_dir     = $websphere_deployer::params::base_dir,
 
   # By default, only root owns files.  This gives some protection against a 
   # hijacked `wsadmin` account (eg though web-->shell injection)

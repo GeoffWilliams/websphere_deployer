@@ -26,7 +26,7 @@ define websphere_deployer::deploy_ear(
   $download_url   = $title,
   $incoming_dir   = $websphere_deployer::params::incoming_dir,
   $user           = $websphere_deployer::params::user,
-  $group          = $websphere_deployer::params::user,
+  $group          = $websphere_deployer::params::group,
   $version_regexp = $websphere_deployer::params::version_regexp,
   $exec_path      = $websphere_deployer::params::exec_path,
 ) {
