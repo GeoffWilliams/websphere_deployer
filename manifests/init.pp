@@ -103,4 +103,10 @@ class websphere_deployer(
     user    => $user,
     minute  => $deploy_freq,
   }
+
+  # seems to be needed on client systems
+  package { "faraday_middleware":
+    provider => "puppet_gem",
+    ensure   => present,
+  }
 }
