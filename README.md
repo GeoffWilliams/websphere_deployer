@@ -150,8 +150,8 @@ This path is stored within the custom fact itself and results in a structure
 similar to the following:
 ```ruby
 wsapp_instance_appnames => {
-  sanctionliftws => "SanctionLiftService EAR",
-  sz => "sz EAR",
+  cerealbowlws  => "CerealBowlService EAR",
+  az            => "az EAR",
   ...
 }
 ```
@@ -163,9 +163,9 @@ Results in a structure similar to the following:
 ```ruby 
 wsapp_versions => {
    => {
-    groupId => "RMS",
+    groupId    => "com.world.domination.test",
     artifactId => "hello world",
-    version => "4.55.6"
+    version    => "4.55.6"
   }
 }
 ```
