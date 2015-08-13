@@ -1,7 +1,7 @@
 # !!! PUPPET MANAGED, DO NOT EDIT LOCALLY !!!
 <% if @props_hash -%>
-<% @props_hash.each do | key, value| -%>
-<%= key %>=<%= value %>
+<% @props_hash.keys.sort.each do | key| -%>
+<%= key %>=<%= @props_hash[key] %>
 <% end -%>
 <% else %>
 # no properties available
