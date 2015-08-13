@@ -46,7 +46,7 @@ define websphere_deployer::deploy_ear(
   if has_key($::wsapp_instance_appnames, $deployment_instance) {
     $app_name = $::wsapp_instance_appnames[$deployment_instance]
   } else {
-    fail("No facter data for wsapp_instance_appnames[${deployment_instance}]")
+    warning("No facter data for wsapp_instance_appnames[${deployment_instance}] (skipping)")
   }
   $final_file = "${incoming_dir}/${deployment_instance}.ear"
   
