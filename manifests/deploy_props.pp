@@ -1,3 +1,51 @@
+# Create/remote deployment properties files under /opt/ibm/deployer/properties
+#
+# Params
+# ======
+# [*ensure*]
+#   Ensure the properties file is present (default) or absent
+# [*additional_emails*]
+#   Value to munge into properties file
+# [*app_name*]
+#   Value to munge into properties file
+# [*app_servers*]
+#   Value to munge into properties file
+# [*cell*]
+#   Value to munge into properties file
+# [*cluster*]
+#   Value to munge into properties file
+# [*context_root*]
+#   Value to munge into properties file
+# [*cookie_path*]
+#   Value to munge into properties file
+# [*deploy_env_jsp*]
+#   Value to munge into properties file
+# [*deploy_ws*]
+#   Value to munge into properties file
+# [*ear_path*]
+#   Value to munge into properties file
+# [*host*]
+#   Value to munge into properties file
+# [*parent_first*]
+#   Value to munge into properties file
+# [*restart_app_servers*]
+#   Value to munge into properties file
+# [*security_role_mapping*]
+#   Value to munge into properties file
+# [*stop_app_servers*]
+#   Value to munge into properties file
+# [*properties_dir*]
+#   Directory to store properties files in.  System-wide setting in 
+#   `websphere_deployer` for consistency
+# [*exec_path*]
+#   Path used for exec resource used to restart services.  System-wide setting
+#   in `websphere_deployer` for consistency
+# [*user*]
+#   Properties file owner, restricted to a system-wide value in 
+#   `websphere_deployer` for consistency
+# [*group*]
+#   Propeties file group, restricted to a system-wide value in 
+#   `websphere_deployer` for consistency
 define websphere_deployer::deploy_props(
     $ensure                 = present,
     $additional_emails      = "",
