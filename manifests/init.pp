@@ -17,6 +17,9 @@
 #   Directory to save `.ear` files to.  The cron job will detect these files
 #   and deploy them if present.  `deploy_ear` resource type 
 #   references the variable from here to ensure consistency
+# [*properties_dir*]
+#   Directory to write .properties for.  `corp_props` resource uses this to
+#   ensure directory is consistent across server
 # [*version_regexp*]
 #   Regular expression used to validate version numbers captured from the
 #   download URL via regular expression.  `deploy_ear` resource
@@ -33,6 +36,7 @@ class websphere_deployer(
     $deploy_freq    = $websphere_deployer::params::deploy_freq,
     $cron_command   = $websphere_deployer::params::cron_command,
     $incoming_dir   = $websphere_deployer::params::incoming_dir,
+    $properties_dir = $websphere_deployer::params::properties_dir,
     $version_regexp = $websphere_deployer::params::version_regexp,
     $exec_path      = $websphere_deployer::params::exec_path,
 ) inherits websphere_deployer::params {

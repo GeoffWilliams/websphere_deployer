@@ -1,0 +1,8 @@
+# !!! PUPPET MANAGED, DO NOT EDIT LOCALLY !!!
+<% if @props_hash -%>
+<% @props_hash.each do | key, value| -%>
+<%= key %>=<%= value %>
+<% end -%>
+<% else %>
+# no properties available
+<% end -%>
