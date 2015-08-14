@@ -5,9 +5,12 @@
 # c) nokogiri never installs properly without installing half the internet and a C compiler
 # ... therefore we will process as dumb strings.  Infact, why not go for the
 # jugular, lets use awk
+require 'shellwords'
 
 def parse_xml(field, file)
-  command = "awk 'BEGIN {FS=\"<|>\"} /#{field}/ { print $3 ; exit }' < '#{file}'"
+  field_safe  = Shellwords.escape(field)
+  file_safe   = Shellwords.escape(file)
+  command = "awk 'BEGIN {FS=\"<|>\"} /#{Shellwords.escape(field)}/ { print $3 ; exit }' < #{file_safe}"
   return Facter::Core::Execution.exec(command)
 end
 
@@ -15,7 +18,9 @@ Facter.add("wsapp_versions") do
   wsapp_versions = {}
   Dir.glob("/opt/ibm/WebSphere/AppServer/profiles/AppSrv*/installedApps/*/*.ear/META-INF/maven/*/*/pom.xml").each do |path|
 # ignore name from pom.xml - could potentially be different to the real app name
-#    name        = parse_xml("name", path)
+# crap - we can't ignore it! we need to use as a key... we don't read this in puppet
+# code though and can probably get this from hiera in the future
+    name        = parse_xml("name", path)
     version     = parse_xml("version", path)
     group_id    = parse_xml("groupId", path)
     artifact_id = parse_xml("artifactId", path)

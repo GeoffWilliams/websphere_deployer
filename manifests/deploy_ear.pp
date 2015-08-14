@@ -43,52 +43,43 @@ define websphere_deployer::deploy_ear(
   }
 
 
-  if has_key($::wsapp_instance_appnames, $deployment_instance) {
+  if  is_hash($::wsapp_instance_appnames) 
+      and has_key($::wsapp_instance_appnames, $deployment_instance) {
     $app_name = $::wsapp_instance_appnames[$deployment_instance]
+
+    $final_file = "${incoming_dir}/${deployment_instance}.ear"
+    
+    # Capture the version number from the bit of the filename between ear-... and .ear
+    $deployment_instance_version = regsubst($download_url, '.*?ear-(.+).ear', '\1')
+      
+    if $deployment_instance_version =~ $version_regexp {
+      if  is_hash($::wsapp_versions) 
+          and has_key($::wsapp_versions, $app_name) 
+          and has_key($wsapp_versions[$app_name], "version") {
+        $installed_version = $wsapp_versions[$app_name]["version"]
+      } elsif has_key($::wsapp_versions, $app_name) and ! has_key($wsapp_versions[$app_name], "version") {
+        fail("Facter data exists for wsapp_versions[${app_name}] but there is no version number.  You cannot use this tool")
+      } else {
+        # no version information available, force installation
+        $installed_version = "-1"
+      } 
+      
+      if $installed_version != $deployment_instance_version {
+      
+        archive { $final_file:
+          ensure        => present,
+          extract       => false,
+          source        => $download_url,
+          checksum_url  => $checksum_url,
+          checksum_type => $checksum_type,
+          user          => $user,
+          group         => $group,
+        }
+      }
+    } else {
+      fail("No version matching ${version_regexp} could be parsed from '${deployment_instance_version}' (from ${download_url})")
+    }
   } else {
     warning("No facter data for wsapp_instance_appnames[${deployment_instance}] (skipping)")
   }
-  $final_file = "${incoming_dir}/${deployment_instance}.ear"
-  
-  # Capture the version number from the bit of the filename between ear-... and .ear
-  $deployment_instance_version = regsubst($download_url, '.*?ear-(.+).ear', '\1')
-    
-  # surrogate service resource.  always created but only fired via the 
-  # corp_properties DRT (yet to be written)
- 
-  # FIXME this logic is broken. we talk about restarting a whole app server but refernce the instance...
-  # resolve via properties file: 
-  #exec { "was_service_${deployment_instance}":
-  #  path        => $exec_path,
-  #  command     => "restartAppServer ${app_server}",
-  #  refreshonly => true,
-  #}
-
-
-  if $deployment_instance_version =~ $version_regexp {
-    if has_key($::wsapp_versions, $app_name) and has_key($wsapp_versions[$app_name], "version") {
-      $installed_version = $wsapp_versions[$app_name]["version"]
-    } elsif has_key($::wsapp_versions, $app_name) and ! has_key($wsapp_versions[$app_name], "version") {
-      fail("Facter data exists for wsapp_versions[${app_name}] but there is no version number.  You cannot use this tool")
-    } else {
-      # no version information available, force installation
-      $installed_version = "-1"
-    } 
-    
-    if $installed_version != $deployment_instance_version {
-    
-      archive { $final_file:
-        ensure        => present,
-        extract       => false,
-        source        => $download_url,
-        checksum_url  => $checksum_url,
-        checksum_type => $checksum_type,
-        user          => $user,
-        group         => $group,
-      }
-    }
-  } else {
-    fail("No version matching ${version_regexp} could be parsed from '${deployment_instance_version}' (from ${download_url})")
-  }
-
 }

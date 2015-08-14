@@ -67,18 +67,6 @@ describe 'websphere_deployer::deploy_ear', :type => :define do
     end
   end
 
-  # service correctly registered (so we can refer to in from corp_properties DRT
-  #context "service correctly registered" do
-  #  it do
-  #    expect {should compile}.not_to raise_error      
-  #
-  #    should contain_exec("was_service_test").with(
-  #      "refreshonly" => true,
-  #    )
-  #  end
-  #end
-
-
   # Only upgrade when different version is supplied
   context "no upgrade because same version" do
     let :title do
@@ -104,7 +92,8 @@ describe 'websphere_deployer::deploy_ear', :type => :define do
       }
     end
     it do
-      expect {should compile}.to raise_error(/facter.*wsapp_instance_appnames\[test\]/)
+      expect {should compile}.not_to raise_error
+      should_not contain_archive("/opt/ibm/deployments/incoming/test.ear")
     end
   end
 
