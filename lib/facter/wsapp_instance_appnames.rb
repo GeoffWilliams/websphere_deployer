@@ -1,7 +1,7 @@
 # Use awk to read the appName field from the properties files
 require 'shellwords'
 def appname(file)
-  command = "awk 'BEGIN {FS=\"=\"} /appName/  { print $2 ; exit }' < '#{Shellwords.escape(file)}'"
+  command = "awk 'BEGIN {FS=\"=\"} /appName/  { print $2 ; exit }' < #{Shellwords.escape(file)}"
   return Facter::Core::Execution.exec(command)
 end
 
