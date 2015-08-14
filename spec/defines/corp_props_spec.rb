@@ -55,6 +55,20 @@ describe 'websphere_deployer::corp_props', :type => :define do
     end
   end
 
+  # mkdir -p all the directories we need for the classpath dir
+  context "classpath dir created" do
+    let :title do
+      "/foo/bar/baz/inky/blinky/clive.properties"
+    end
+    it do
+      should contain_exec("mkdir_p_/foo/bar/baz/inky/blinky").with(
+        "command" => "mkdir -p /foo/bar/baz/inky/blinky",
+        "user"    => "wsadmin",
+        "creates" => "/foo/bar/baz/inky/blinky"
+      )
+    end
+  end
+
   # changed properties cause appserver to be restarted
   #context "restart app server on props change" do
   #  it do
