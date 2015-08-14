@@ -52,8 +52,8 @@ class websphere_deployer(
   # By default, only root owns files.  This gives some protection against a 
   # hijacked `wsadmin` account (eg though web-->shell injection)
   File {
-    owner => "root",
-    group => "root",
+    owner => $user,
+    group => $group,
     mode  => "0644",
   }
 
@@ -62,7 +62,6 @@ class websphere_deployer(
   $script_files  = $websphere_deployer::params::script_files
   $bin_files     = $websphere_deployer::params::bin_files
   $rw_dirs       = $websphere_deployer::params::rw_dirs
-  $ro_dirs       = $websphere_deployer::params::ro_dirs
 
   file { $base_dir:
     ensure => directory,
@@ -71,14 +70,9 @@ class websphere_deployer(
   # directories owned by `wsadmin`
   file { $rw_dirs:
     ensure => directory,
-    owner  => $user,
-    group  => $group,
   }
 
   # directories that are RO to wsadmin user (security)
-  file{ $ro_dirs:
-    ensure => directory,
-  }
 
   # Install deployment scrips using the puppet fileserver.  Long-term plan is
   # to replace these with a tarball or RPM file downloaded from corporate repo

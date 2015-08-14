@@ -51,17 +51,14 @@ class websphere_deployer::params {
     "${base_dir}/processing",
     $properties_dir,
     "${base_dir}/wget",
-  ]
-
-  # list of files that are root owned with restrictive permissions
-  $ro_dirs              = [
     "${base_dir}/${bin_dir_name}",
     "${base_dir}/${script_dir_name}",
   ]
 
   # munged path directory for exec resources 
   $exec_path            = [
-    $ro_dirs,
+    "${base_dir}/${bin_dir_name}",
+    "${base_dir}/${script_dir_name}",
     "/usr/bin",
     "/bin",
   ]

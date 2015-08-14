@@ -9,10 +9,6 @@ def should_contain_dir(name, owner)
   )
 end
 
-def should_contain_ro_dir(name)
-  should_contain_dir(name, "root")
-end
-
 def should_contain_rw_dir(name)
   should_contain_dir(name, "wsadmin")
 end
@@ -20,8 +16,8 @@ end
 def should_contain_file(path, name)
   should contain_file("#{path}/#{name}").with(
     "ensure" => "file",
-    "owner"  => "root",
-    "group"  => "root",
+    "owner"  => "wsadmin",
+    "group"  => "wsadmin",
     "mode"   => "0755",
     "source" => "puppet:///modules/websphere_deployer/#{name}"
   )
@@ -37,6 +33,12 @@ end
 
 describe 'websphere_deployer' do
 
+  let :params do
+    {
+      "gem_provider" => "puppet_gem"
+    }
+  end
+
   # successful compilation
   context "compile minimal" do
     it do
@@ -48,7 +50,7 @@ describe 'websphere_deployer' do
   # directories created
   context "directories created" do
     it do
-      should_contain_ro_dir("/opt/ibm/deployments")
+      should_contain_rw_dir("/opt/ibm/deployments")
       should_contain_rw_dir("/opt/ibm/deployments/error")
       should_contain_rw_dir("/opt/ibm/deployments/incoming")
       should_contain_rw_dir("/opt/ibm/deployments/logs")
@@ -56,8 +58,8 @@ describe 'websphere_deployer' do
       should_contain_rw_dir("/opt/ibm/deployments/processing")
       should_contain_rw_dir("/opt/ibm/deployments/properties")
       should_contain_rw_dir("/opt/ibm/deployments/wget")
-      should_contain_ro_dir("/opt/ibm/deployments/bin")
-      should_contain_ro_dir("/opt/ibm/deployments/scripts")
+      should_contain_rw_dir("/opt/ibm/deployments/bin")
+      should_contain_rw_dir("/opt/ibm/deployments/scripts")
     end
   end
 

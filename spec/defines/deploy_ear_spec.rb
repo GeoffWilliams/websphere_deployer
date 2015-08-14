@@ -29,7 +29,9 @@ describe 'websphere_deployer::deploy_ear', :type => :define do
 
   # include the params class before running tests
   let :pre_condition do
-    'class { "websphere_deployer": }'
+    'class { "websphere_deployer": 
+       gem_provider => "puppet_gem",
+     }'
   end
 
   # minimal compilation
