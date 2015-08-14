@@ -79,4 +79,14 @@ class websphere_deployer::params {
   # regular expression to match a valid version.  If you change this, make sure
   # to also fixup the RSpec tests
   $version_regexp       = '\d+\.\d+\.\d+'
+
+  # how to install gems on this system
+  if $aio_agent_version {
+    # PE 2015x
+    $gem_provider = "puppet_gem"
+  } else {
+    # PE 3.8x
+    $gem_provider = "pe_gem"
+  }
+  # Note - no Puppet OSS support
 }

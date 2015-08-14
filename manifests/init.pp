@@ -29,6 +29,8 @@
 # [*exec_path*]
 #   Default path to use for `Exec` resourcaes.  `deploy_ear` resource type 
 #   references the variable from here to ensure consistency
+# [*gem_provider*]
+#   provider to use for intalling gems - depends on PE version
 class websphere_deployer(
     $cron_ensure    = present,
     $user           = $websphere_deployer::params::user,
@@ -39,6 +41,7 @@ class websphere_deployer(
     $properties_dir = $websphere_deployer::params::properties_dir,
     $version_regexp = $websphere_deployer::params::version_regexp,
     $exec_path      = $websphere_deployer::params::exec_path,
+    $gem_provider   = $websphere_deployer::params::gem_provider,
 ) inherits websphere_deployer::params {
   
   # base_dir already munged in params.pp so making it a parameter would give us
@@ -106,7 +109,7 @@ class websphere_deployer(
 
   # seems to be needed on client systems
   package { "faraday_middleware":
-    provider => "puppet_gem",
+    provider => $gem_provider,
     ensure   => present,
   }
 }
