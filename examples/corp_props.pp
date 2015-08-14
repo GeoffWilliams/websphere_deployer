@@ -5,6 +5,6 @@ $props_hash = {
   "aaaaaa.webgway.batch.schedule.date.format"     => "yyMMddHHmm"
 }
 
-websphere_deployer::corp_props { "/tmp/test.properties":
+websphere_deployer::corp_props { "/tmp/a/b/c/d/e/test.properties":
   props_hash => $props_hash,
 }
