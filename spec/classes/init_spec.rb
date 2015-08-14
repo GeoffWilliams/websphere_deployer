@@ -24,7 +24,7 @@ def should_contain_file(path, name)
 end
 
 def should_contain_script(name)
-  should_contain_file("/opt/ibm/deployments/scripts", name)
+  should_contain_file("/opt/ibm/scripts", name)
 end
 
 def should_contain_bin(name)
@@ -59,7 +59,7 @@ describe 'websphere_deployer' do
       should_contain_rw_dir("/opt/ibm/deployments/properties")
       should_contain_rw_dir("/opt/ibm/deployments/wget")
       should_contain_rw_dir("/opt/ibm/deployments/bin")
-      should_contain_rw_dir("/opt/ibm/deployments/scripts")
+      should_contain_rw_dir("/opt/ibm/scripts")
     end
   end
 

@@ -1,6 +1,10 @@
 class websphere_deployer::params {
+
+  # ibm directory
+  $ibm_dir              = "/opt/ibm"
+
   # base directory
-  $base_dir             = "/opt/ibm/deployments"
+  $base_dir             = "${ibm_dir}/deployments"
 
   # user to run deployment scripts as (also used for file ownership)
   $user                 = "wsadmin"
@@ -10,6 +14,9 @@ class websphere_deployer::params {
 
   # directory under $base_dir to store scripts
   $script_dir_name      = "scripts"
+
+  # directory to store scripts in
+  $script_dir           = "${ibm_dir}/scripts"
 
   # directory under $base_dir to store binaries
   $bin_dir_name         = "bin"
@@ -52,13 +59,13 @@ class websphere_deployer::params {
     $properties_dir,
     "${base_dir}/wget",
     "${base_dir}/${bin_dir_name}",
-    "${base_dir}/${script_dir_name}",
+    $script_dir,
   ]
 
   # munged path directory for exec resources 
   $exec_path            = [
     "${base_dir}/${bin_dir_name}",
-    "${base_dir}/${script_dir_name}",
+    $script_dir,
     "/usr/bin",
     "/bin",
   ]

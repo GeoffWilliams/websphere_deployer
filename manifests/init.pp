@@ -57,7 +57,7 @@ class websphere_deployer(
     mode  => "0644",
   }
 
-  $script_dir    = "${base_dir}/${websphere_deployer::params::script_dir_name}"
+  $script_dir    = $websphere_deployer::params::script_dir
   $bin_dir       = "${base_dir}/${websphere_deployer::params::bin_dir_name}"
   $script_files  = $websphere_deployer::params::script_files
   $bin_files     = $websphere_deployer::params::bin_files
