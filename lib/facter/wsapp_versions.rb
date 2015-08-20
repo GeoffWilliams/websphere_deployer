@@ -20,10 +20,10 @@ Facter.add("wsapp_versions") do
 # ignore name from pom.xml - could potentially be different to the real app name
 # crap - we can't ignore it! we need to use as a key... we don't read this in puppet
 # code though and can probably get this from hiera in the future
-    name        = parse_xml("name", path)
-    version     = parse_xml("version", path)
-    group_id    = parse_xml("groupId", path)
-    artifact_id = parse_xml("artifactId", path)
+    name        = parse_xml("<name>", path)
+    version     = parse_xml("<version>", path)
+    group_id    = parse_xml("<groupId>", path)
+    artifact_id = parse_xml("<artifactId>", path)
     wsapp_versions[name] = {
       "groupId"    => group_id,
       "artifactId" => artifact_id,
