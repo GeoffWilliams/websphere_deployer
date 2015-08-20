@@ -10,7 +10,7 @@ require 'shellwords'
 def parse_xml(field, file)
   field_safe  = Shellwords.escape(field)
   file_safe   = Shellwords.escape(file)
-  command = "awk 'BEGIN {FS=\"<|>\"} /#{Shellwords.escape(field)}/ { print $3 ; exit }' < #{file_safe}"
+  command = "awk 'BEGIN {FS=\"<|>\"} /#{field}/ { print $3 ; exit }' < #{file_safe}"
   return Facter::Core::Execution.exec(command)
 end
 
