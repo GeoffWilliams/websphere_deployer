@@ -5,13 +5,27 @@
 # c) nokogiri never installs properly without installing half the internet and a C compiler
 # ... therefore we will process as dumb strings.  Infact, why not go for the
 # jugular, lets use awk
-require 'shellwords'
+#
+# ... Ok, here's why not - we're on solaris and it doesn't work properly - or 
+# at least not in the way I expect it to.  Our only real option is to read the
+# file with ruby and process each line - YUK!
 
-def parse_xml(field, file)
-  field_safe  = Shellwords.escape(field)
-  file_safe   = Shellwords.escape(file)
-  command = "awk 'BEGIN {FS=\"<|>\"} /#{field}/ { print $3 ; exit }' < #{file_safe}"
-  return Facter::Core::Execution.exec(command)
+def parse_xml(tag_name, data)
+  value = "NOT_FOUND"
+
+  # regexp to both match the line and replace with whitespace
+  tag = /<\/?#{tag_name}>/
+  
+  data.each do | line |
+    if line =~ tag then
+      # remove the tag
+      value = line.strip().gsub(tag, "")
+
+      # break us out of this loop - we have found what we are looking for
+      break
+    end
+  end    
+  return value
 end
 
 Facter.add("wsapp_versions") do
@@ -23,9 +37,12 @@ Facter.add("wsapp_versions") do
     # needs to be translated to `opr EAR`.  This can be done by splitting on 
     # `/` and eliminating the .ear extension
     name        = path.split("/")[9].gsub(/\.ear$/i, "")
-    version     = parse_xml("<version>", path)
-    group_id    = parse_xml("<groupId>", path)
-    artifact_id = parse_xml("<artifactId>", path)
+
+    data        = IO.readlines(path)
+    
+    version     = parse_xml("version", data)
+    group_id    = parse_xml("groupId", data)
+    artifact_id = parse_xml("artifactId", data)
     wsapp_versions[name] = {
       "groupId"    => group_id,
       "artifactId" => artifact_id,
