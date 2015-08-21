@@ -17,10 +17,12 @@ end
 Facter.add("wsapp_versions") do
   wsapp_versions = {}
   Dir.glob("/opt/ibm/WebSphere/AppServer/profiles/AppSrv*/installedApps/*/*.ear/META-INF/maven/*/*/pom.xml").each do |path|
-# ignore name from pom.xml - could potentially be different to the real app name
-# crap - we can't ignore it! we need to use as a key... we don't read this in puppet
-# code though and can probably get this from hiera in the future
-    name        = parse_xml("<name>", path)
+ 
+    # the application name can only be obtained from the path to the pom.xml
+    # file.  EG /opt/ibm/WebSphere/AppServer/profiles/AppSrv01/installedApps/Cell01/opr EAR.ear/opr-webapp-4.2.0.war/META-INF/maven/nswrta.opr/opr-webapp/
+    # needs to be translated to `opr EAR`.  This can be done by splitting on 
+    # `/` and eliminating the .ear extension
+    name        = path.split("/")[9].gsub(/\.ear$/i, "")
     version     = parse_xml("<version>", path)
     group_id    = parse_xml("<groupId>", path)
     artifact_id = parse_xml("<artifactId>", path)
